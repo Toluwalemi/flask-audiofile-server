@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  audio:
+    image: audio
+    container_name: audio
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
+    volumes:
+      - '.:/usr/src/app'
+    ports:
+      - 5001:5000
+    environment:
+      - FLASK_APP=src/__init__.py
+      - FLASK_DEBUG=1
+      - APP_SETTINGS=src.config.DevelopmentConfig

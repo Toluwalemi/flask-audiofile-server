@@ -1,0 +1,33 @@
+FROM python:3.7-slim
+
+# install environment dependencies
+RUN apt-get update -yqq \
+    && apt-get install -yqq --no-install-recommends \
+    netcat \
+    libpq-dev \
+    python-dev \
+    gcc \
+    wkhtmltopdf \
+    && apt-get -q clean
+
+# set working directory
+RUN mkdir -p /usr/src/app
+
+WORKDIR /usr/src/app
+
+# add requirements
+COPY ./requirements.txt ./requirements.txt
+
+# add entrypoint.sh
+COPY ./entrypoint.sh ./entrypoint.sh
+
+# install requirements
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+# add app
+COPY . .
+
+RUN ["chmod", "+x", "./entrypoint.sh"]
+# run server
+CMD ["./entrypoint.sh"]
