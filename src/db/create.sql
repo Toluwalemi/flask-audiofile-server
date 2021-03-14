@@ -1,0 +1,3 @@
+CREATE DATABASE audio_prod;
+CREATE DATABASE audio_dev;
+CREATE DATABASE audio_test;

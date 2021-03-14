@@ -15,3 +15,32 @@ services:
       - FLASK_APP=src/__init__.py
       - FLASK_DEBUG=1
       - APP_SETTINGS=src.config.DevelopmentConfig
+#      - DATABASE_HOST=${DB_HOST}
+#      - DATABASE_PORT=${DB_PORT}
+      - DATABASE_URL=${DB_URL}/audio_dev
+      - DATABASE_TEST_URL=${DB_URL}/audio_test
+    depends_on:
+      - audio_db
+    links:
+      - audio_db
+    networks:
+      - backend
+
+  audio_db:
+    container_name: audio_db
+    image: postgres:10.4-alpine
+    ports:
+      - 5423
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - backend
+
+volumes:
+  pgdata:
+
+networks:
+  backend:
