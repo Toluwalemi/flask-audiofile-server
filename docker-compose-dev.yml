@@ -12,7 +12,6 @@ services:
     ports:
       - 5001:5000
     environment:
-      - FLASK_APP=src/__init__.py
       - FLASK_DEBUG=1
       - APP_SETTINGS=src.config.DevelopmentConfig
       - DATABASE_HOST=${DB_HOST}
