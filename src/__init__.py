@@ -86,7 +86,7 @@ class AudioBook(TimestampMixin, db.Model):
         return f"{__class__.__name__}({self.name}"
 
 
-@app.route('/users/ping', methods=['GET'])
+@app.route('/ping', methods=['GET'])
 def ping_pong():
     return jsonify({
         'status': 'success',

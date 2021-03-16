@@ -19,6 +19,7 @@ services:
       - DATABASE_PORT=${DB_PORT}
       - DATABASE_URL=${DB_URL}/audio_dev
       - DATABASE_TEST_URL=${DB_URL}/audio_test
+      - SECRET_KEY=${SECRET_KEY}
     depends_on:
       - audio_db
     links:
