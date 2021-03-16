@@ -19,7 +19,7 @@ def create_app(script_info=None):
     db.init_app(app)
 
     # register blueprints
-    from src.api.audio import audio_blueprint
+    from src.api.views import audio_blueprint
     app.register_blueprint(audio_blueprint)
 
     # shell context for flask-cli
