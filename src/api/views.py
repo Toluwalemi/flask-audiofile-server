@@ -1,3 +1,4 @@
+import sqlalchemy
 from flask import jsonify, request
 from flask_classful import FlaskView
 from sqlalchemy import exc
@@ -100,3 +101,14 @@ class AudioItemView(FlaskView):
             db.session.commit()
 
             return response_object, 200
+
+    def delete(self, audioFileType, audioFileID):
+        if audioFileType == 'song':
+            try:
+                song = Song.query.filter_by(id=audioFileID).first_or_404()
+                db.session.delete(song)
+                return jsonify({"status": "deleted"}), 200
+            except sqlalchemy.orm.exc.NoResultFound:
+                return jsonify({"detail": "No result found"}), 400
+            except:
+                return jsonify({"detail": "No result found"}), 500
