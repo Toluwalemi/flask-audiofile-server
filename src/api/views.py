@@ -10,7 +10,7 @@ class AudioView(FlaskView):
     """Class-based views for HTTP Methods: POST, GET, PUT & DELETE"""
 
     def post(self):
-        new_audio = {}
+        new_song = {}
         post_data = request.get_json()
         response_object = {
             'status': 'fail',
@@ -20,15 +20,13 @@ class AudioView(FlaskView):
             return jsonify(response_object), 400
 
         if post_data['audioFileType'] == 'song':
-            new_audio['audioFileMetadata'] = {'name': post_data.get('audioFileMetadata').get('name'),
-                                              'duration': post_data.get('audioFileMetadata').get('duration')
-                                              }
-            # print(new_audio)
-            name = new_audio['audioFileMetadata'].get('name')
-            duration = new_audio['audioFileMetadata'].get('duration')
+            new_song['audioFileMetadata'] = {'name': post_data.get('audioFileMetadata').get('name'),
+                                             'duration': post_data.get('audioFileMetadata').get('duration')
+                                             }
+            name = new_song['audioFileMetadata'].get('name')
+            duration = new_song['audioFileMetadata'].get('duration')
             try:
                 song = Song.query.filter_by(name=name).first()
-                print(song)
                 if not song:
                     db.session.add(Song(name=name, duration=duration))
                     db.session.commit()
@@ -43,6 +41,8 @@ class AudioView(FlaskView):
             except exc.IntegrityError as e:
                 db.session.rollback()
                 return jsonify(response_object), 400
+            except:
+                return jsonify(response_object), 500
 
     def get(self, audioFileType):
         """Get all users"""
@@ -83,3 +83,20 @@ class AudioItemView(FlaskView):
                 return jsonify(response_object), 400
             except:
                 return jsonify(response_object), 500
+
+    def patch(self, audioFileType, audioFileID):
+        response_object = {
+            'status': 'success',
+            'message': 'Your song has been updated!'
+        }
+        post_data = request.get_json()
+        if audioFileType == 'song':
+            song = Song.query.get(audioFileID)
+            if post_data.get('audioFileMetadata').get('name'):
+                song.name = post_data['audioFileMetadata']['name']
+            if post_data.get('audioFileMetadata').get('duration'):
+                song.duration = post_data['audioFileMetadata']['duration']
+            db.session.add(song)
+            db.session.commit()
+
+            return response_object, 200
