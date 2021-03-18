@@ -2,7 +2,6 @@ import json
 import unittest
 
 from src import db
-from src.api.helpers import add_song
 from src.api.models import Song
 from src.api.tests.base import BaseTestCase
 
@@ -102,6 +101,20 @@ class TestAudioService(BaseTestCase):
             self.assertEqual(response.status_code, 400)
             self.assertIn('This song already exists.', data['message'])
             self.assertIn('fail', data['status'])
+
+        print("\n=============================================================")
+
+    def test_specific_song(self):
+        """Ensure get single song behaves correctly."""
+        song = Song(name='hold_me_down', duration=180)
+        db.session.add(song)
+        db.session.commit()
+        with self.client:
+            response = self.client.get(f'/api/v1/audio/song/{song.id}/')
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 200)
+            self.assertIn('hold_me_down', data['data']['name'])
+            self.assertIn('success', data['status'])
 
         print("\n=============================================================")
 
