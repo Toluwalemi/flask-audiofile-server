@@ -149,6 +149,52 @@ class TestAudioService(BaseTestCase):
 
         print("\n=============================================================")
 
+    def test_patch_song(self):
+        """Test to update song json"""
+        song = add_song('hold_me_down', 180)
+        with self.client:
+            response = self.client.patch(
+                f'/api/v1/audio/song/{song.id}/',
+                data=json.dumps({
+                    'audioFileType': 'song',
+                    'audioFileMetadata': {
+                        'name': 'pull_me_up',
+                        'duration': 220
+                    }
+                }),
+                content_type='application/json',
+            )
+
+            data = json.loads((response.data.decode()))
+            self.assertEqual(response.status_code, 200)
+            self.assertIn('Your song has been updated!', data['message'])
+            self.assertIn('success', data['status'])
+
+        print("\n=============================================================")
+
+    # def test_patch_invalid_song(self):
+    #     """Test to update song json"""
+    #     song = add_song('hold_me_down', 180)
+    #     with self.client:
+    #         response = self.client.patch(
+    #             f'/api/v1/audio/song/{song.id}/',
+    #             data=json.dumps({
+    #                 'audioFileType': 'song',
+    #                 'audioFileMetadata': {
+    #                     'name': 'pull_me_up',
+    #                     'duration': 0
+    #                 }
+    #             }),
+    #             content_type='application/json',
+    #         )
+    #
+    #         data = json.loads((response.data.decode()))
+    #         self.assertEqual(response.status_code, 400)
+    #         # self.assertIn('Song was updated.', data['message'])
+    #         # self.assertIn('success', data['status'])
+    #
+    #     print("\n=============================================================")
+
 
 if __name__ == '__main__':
     unittest.main()
