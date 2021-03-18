@@ -118,6 +118,29 @@ class TestAudioService(BaseTestCase):
 
         print("\n=============================================================")
 
+    def test_specific_song_no_id(self):
+        """Ensure error is thrown if an id is not provided."""
+        with self.client:
+            response = self.client.get(f'/api/v1/audio/song/huh/')
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 500)
+            self.assertIn('Song does not exist', data['message'])
+            self.assertIn('fail', data['status'])
+
+        print("\n=============================================================")
+
+    def test_specific_song_incorrect_id(self):
+        """Ensure error is thrown if an id is incorrect."""
+        with self.client:
+            response = self.client.get(f'/api/v1/audio/song/404/')
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 400)
+            self.assertIn('Song does not exist', data['message'])
+            self.assertIn('fail', data['status'])
+
+        print("\n=============================================================")
+
+
 
 if __name__ == '__main__':
     unittest.main()
