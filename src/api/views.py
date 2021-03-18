@@ -44,6 +44,16 @@ class AudioView(FlaskView):
                 db.session.rollback()
                 return jsonify(response_object), 400
 
+    def get(self):
+        """Get all users"""
+        response_object = {
+            'status': 'success',
+            'data': {
+                'songs': [song.to_json() for song in Song.query.all()]
+            }
+        }
+        return jsonify(response_object), 200
+
 
 class AudioItemView(FlaskView):
     """Class-based views to get a single audioFileType"""
@@ -53,19 +63,18 @@ class AudioItemView(FlaskView):
             'status': 'fail',
             'message': 'Song does not exist'
         }
-        # response = {}
         if audioFileType == 'song':
             try:
-                response = Song.query.filter_by(id=audioFileID).first()
-                if not response:
+                song = Song.query.filter_by(id=audioFileID).first()
+                if not song:
                     return jsonify(response_object), 400
                 else:
                     response_object = {
                         'status': 'success',
                         'data': {
-                            'id': response.id,
-                            'name': response.name,
-                            'duration': response.duration
+                            'id': song.id,
+                            'name': song.name,
+                            'duration': song.duration
                         }
                     }
                     return jsonify(response_object), 200
