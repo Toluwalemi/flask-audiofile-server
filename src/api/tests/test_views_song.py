@@ -142,7 +142,7 @@ class TestAudioService(BaseTestCase):
         song = add_song('hold_me_down', 180)
         song = add_song('hold_me_up', 200)
         with self.client:
-            response = self.client.get('/api/v1/audio/')
+            response = self.client.get('/api/v1/audio/song/')
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 200)
             self.assertEqual(len(data['data']['songs']), 2)

@@ -44,15 +44,16 @@ class AudioView(FlaskView):
                 db.session.rollback()
                 return jsonify(response_object), 400
 
-    def get(self):
+    def get(self, audioFileType):
         """Get all users"""
-        response_object = {
-            'status': 'success',
-            'data': {
-                'songs': [song.to_json() for song in Song.query.all()]
+        if audioFileType == 'song':
+            response_object = {
+                'status': 'success',
+                'data': {
+                    'songs': [song.to_json() for song in Song.query.all()]
+                }
             }
-        }
-        return jsonify(response_object), 200
+            return jsonify(response_object), 200
 
 
 class AudioItemView(FlaskView):
