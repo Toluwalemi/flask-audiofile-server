@@ -43,3 +43,21 @@ class AudioView(FlaskView):
             except exc.IntegrityError as e:
                 db.session.rollback()
                 return jsonify(response_object), 400
+
+
+class AudioItemView(FlaskView):
+    """Class-based views to get a single audioFileType"""
+
+    def get(self, audioFileType, audioFileID):
+        response = {}
+        if audioFileType == 'song':
+            response = Song.query.filter_by(id=audioFileID).first()
+        response_object = {
+            'status': 'success',
+            'data': {
+                'id': response.id,
+                'name': response.name,
+                'duration': response.duration
+            }
+        }
+        return jsonify(response_object), 200
