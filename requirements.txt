@@ -1,8 +1,10 @@
+coverage==4.4.2
 flask==1.1.2
 Flask-Classful==0.14.2
 flask-marshmallow==0.10.1
 Flask-SQLAlchemy==2.3.2
 Flask-Testing==0.6.2
+flake8===3.5.0
 marshmallow-sqlalchemy==0.20.0
 psycopg2==2.7.3.2
 SQLAlchemy-Utils==0.36.1
