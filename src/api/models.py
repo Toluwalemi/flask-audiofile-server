@@ -31,7 +31,8 @@ class Song(TimestampMixin, DurationMixin, db.Model):
         self.duration = duration
 
     def __repr__(self):
-        return f"{__class__.__name__}({self.name}"
+        return f"{__class__.__name__}({self.id}, " \
+               f"{self.name}, {self.duration}, {self.uploaded_at})"
 
     def to_json(self):
         return {
