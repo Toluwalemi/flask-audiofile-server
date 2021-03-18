@@ -1,8 +1,7 @@
 import json
 import unittest
 
-from src import db
-from src.api.models import Song
+from src.api.helpers import add_song
 from src.api.tests.base import BaseTestCase
 
 
@@ -106,9 +105,7 @@ class TestAudioService(BaseTestCase):
 
     def test_specific_song(self):
         """Ensure get single song behaves correctly."""
-        song = Song(name='hold_me_down', duration=180)
-        db.session.add(song)
-        db.session.commit()
+        song = add_song('hold_me_down', 180)
         with self.client:
             response = self.client.get(f'/api/v1/audio/song/{song.id}/')
             data = json.loads(response.data.decode())
@@ -140,6 +137,17 @@ class TestAudioService(BaseTestCase):
 
         print("\n=============================================================")
 
+    def test_all_songs(self):
+        """Test that the endpoint returns all songs."""
+        song = add_song('hold_me_down', 180)
+        song = add_song('hold_me_up', 200)
+        with self.client:
+            response = self.client.get('/api/v1/audio/')
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(len(data['data']['songs']), 2)
+
+        print("\n=============================================================")
 
 
 if __name__ == '__main__':
