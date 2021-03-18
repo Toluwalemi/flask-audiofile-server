@@ -49,15 +49,27 @@ class AudioItemView(FlaskView):
     """Class-based views to get a single audioFileType"""
 
     def get(self, audioFileType, audioFileID):
-        response = {}
-        if audioFileType == 'song':
-            response = Song.query.filter_by(id=audioFileID).first()
         response_object = {
-            'status': 'success',
-            'data': {
-                'id': response.id,
-                'name': response.name,
-                'duration': response.duration
-            }
+            'status': 'fail',
+            'message': 'Song does not exist'
         }
-        return jsonify(response_object), 200
+        # response = {}
+        if audioFileType == 'song':
+            try:
+                response = Song.query.filter_by(id=audioFileID).first()
+                if not response:
+                    return jsonify(response_object), 400
+                else:
+                    response_object = {
+                        'status': 'success',
+                        'data': {
+                            'id': response.id,
+                            'name': response.name,
+                            'duration': response.duration
+                        }
+                    }
+                    return jsonify(response_object), 200
+            except ValueError:
+                return jsonify(response_object), 400
+            except:
+                return jsonify(response_object), 500
