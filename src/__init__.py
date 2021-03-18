@@ -5,9 +5,41 @@ from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
 
 # instantiate the db
+
 db = SQLAlchemy()
 ma = Marshmallow()
 
+
+# app.get(/create)
+#
+# app.get('/v1/audio/:audiofiletype/:id) req.param = '
+#         '{
+# audiofiletype: song,
+#     id:2
+# }
+#
+# '/v1/audio/song/2
+#
+# Model.find(id)
+#
+# body  = {
+#                     'audioFileType': 'Song',
+#                     'audioFileMetadata': {
+#                         'id': 1,
+#                         'name': 'hold_me_down',
+#                         'duration': 180,
+#                         'uploaded_at': '2021-03-16 13:31:34.420226'
+#                     }
+#                 }
+#
+# newAudio = {}
+# newAudio['duration'] = body['audioFileMetadata']['duration']
+#
+# create- localhost:3000/create
+# {
+#     audiotype: podcast/song/audiobook,
+#     metadata:
+# }
 
 def create_app(script_info=None):
     # instantiate the app
@@ -18,13 +50,28 @@ def create_app(script_info=None):
     app.config.from_object(app_settings)
 
     # set up extensions
-    db.init_app(app)
-    ma.init_app(app)
+    with app.app_context():
+        extensions(app)
 
-    # register blueprints
-    from src.api.views import audio_blueprint
-    app.register_blueprint(audio_blueprint)
+        # register blueprints
+        from src.api.routes.urls import bootstrap_routes
+
+        bootstrap_routes(app, route_prefix='/api/v1')
 
     # shell context for flask-cli
     app.shell_context_processor({'app': app, 'db': db})
     return app
+
+
+def extensions(app):
+    """
+    Register 0 or more extensions (mutates the app passed in).
+
+    :param app: Flask application instance
+    :return: None
+    """
+    # from profile.database import db, migrate
+    db.init_app(app)
+    ma.init_app(app)
+
+    return None
