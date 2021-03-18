@@ -10,37 +10,6 @@ db = SQLAlchemy()
 ma = Marshmallow()
 
 
-# app.get(/create)
-#
-# app.get('/v1/audio/:audiofiletype/:id) req.param = '
-#         '{
-# audiofiletype: song,
-#     id:2
-# }
-#
-# '/v1/audio/song/2
-#
-# Model.find(id)
-#
-# body  = {
-#                     'audioFileType': 'Song',
-#                     'audioFileMetadata': {
-#                         'id': 1,
-#                         'name': 'hold_me_down',
-#                         'duration': 180,
-#                         'uploaded_at': '2021-03-16 13:31:34.420226'
-#                     }
-#                 }
-#
-# newAudio = {}
-# newAudio['duration'] = body['audioFileMetadata']['duration']
-#
-# create- localhost:3000/create
-# {
-#     audiotype: podcast/song/audiobook,
-#     metadata:
-# }
-
 def create_app(script_info=None):
     # instantiate the app
     app = Flask(__name__)
@@ -55,7 +24,6 @@ def create_app(script_info=None):
 
         # register blueprints
         from src.api.routes.urls import bootstrap_routes
-
         bootstrap_routes(app, route_prefix='/api/v1')
 
     # shell context for flask-cli
