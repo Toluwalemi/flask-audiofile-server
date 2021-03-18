@@ -68,8 +68,6 @@ class TestAudioService(BaseTestCase):
 
         print("\n=============================================================")
 
-        pass
-
     def test_add_duplicate_audio_file(self):
         """Ensure that an error is returned for a duplicate entry"""
         with self.client:
@@ -172,28 +170,25 @@ class TestAudioService(BaseTestCase):
 
         print("\n=============================================================")
 
-    # def test_patch_invalid_song(self):
-    #     """Test to update song json"""
-    #     song = add_song('hold_me_down', 180)
-    #     with self.client:
-    #         response = self.client.patch(
-    #             f'/api/v1/audio/song/{song.id}/',
-    #             data=json.dumps({
-    #                 'audioFileType': 'song',
-    #                 'audioFileMetadata': {
-    #                     'name': 'pull_me_up',
-    #                     'duration': 0
-    #                 }
-    #             }),
-    #             content_type='application/json',
-    #         )
-    #
-    #         data = json.loads((response.data.decode()))
-    #         self.assertEqual(response.status_code, 400)
-    #         # self.assertIn('Song was updated.', data['message'])
-    #         # self.assertIn('success', data['status'])
-    #
-    #     print("\n=============================================================")
+    def test_delete_song(self):
+        """Test that a specific song is deleted"""
+        song = add_song('hold_me_down', 180)
+        with self.client:
+            response = self.client.delete(
+                f'/api/v1/audio/song/{song.id}/'
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(response.json, {'detail': "deleted"})
+        print("\n=============================================================")
+
+    def test_delete_invalid_song(self):
+        """Test that the url is incorrect for DELETE HTTP method"""
+        with self.client:
+            response = self.client.delete(
+                f'/api/v1/audio/song/eeee/',
+            )
+        self.assertEqual(response.status_code, 500)
+        print("\n=============================================================")
 
 
 if __name__ == '__main__':
