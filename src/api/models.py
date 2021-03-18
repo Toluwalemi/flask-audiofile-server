@@ -1,3 +1,5 @@
+from sqlalchemy.orm import validates
+
 from src import db
 
 
@@ -10,6 +12,12 @@ class TimestampMixin(object):
 class DurationMixin(object):
     duration = db.Column(db.Integer, nullable=False)
 
+    @validates('duration')
+    def validate_duration(self, key, duration):
+        if duration < 1:
+            raise ValueError('The duration must be a positive number')
+        return duration
+
 
 class Song(TimestampMixin, DurationMixin, db.Model):
     """Model to store details of Audio File Type 'Song'. """
@@ -20,6 +28,7 @@ class Song(TimestampMixin, DurationMixin, db.Model):
 
     def __init__(self, name, duration):
         self.name = name
+        self.duration = duration
 
     def __repr__(self):
         return f"{__class__.__name__}({self.name}"
