@@ -33,6 +33,14 @@ class Song(TimestampMixin, DurationMixin, db.Model):
     def __repr__(self):
         return f"{__class__.__name__}({self.name}"
 
+    def to_json(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'duration': self.duration,
+            'uploaded_at': self.uploaded_at
+        }
+
 
 class Podcast(TimestampMixin, db.Model):
     """Model to store details of Audio File Type 'Podcast'. """
