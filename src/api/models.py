@@ -69,7 +69,7 @@ class AudioBook(TimestampMixin, db.Model):
     id = db.Column(db.Integer,
                    primary_key=True, nullable=False,
                    autoincrement=True, unique=True)
-    title = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
     author = db.Column(db.String(100), nullable=False)
     narrator = db.Column(db.String(100), nullable=False)
 
