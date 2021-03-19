@@ -1,4 +1,5 @@
 import json
+import unittest
 
 from src.api.helpers import add_audiobook
 from src.api.tests.base import BaseTestCase
@@ -115,7 +116,7 @@ class TestAudioBook(BaseTestCase):
         print("\n=============================================================")
 
     def test_patch_song(self):
-        """Test to update song json"""
+        """Test to update audiobook json"""
         audiobook = add_audiobook('zikora', 2000, 'Ngozi Adichie', 'Adepero Oduye')
         with self.client:
             response = self.client.patch(
@@ -135,3 +136,30 @@ class TestAudioBook(BaseTestCase):
             self.assertIn('success', data['status'])
 
         print("\n=============================================================")
+
+    def test_patch_invalid_song(self):
+        pass
+
+    def test_delete_song(self):
+        """Test that a specific song is deleted"""
+        audiobook = add_audiobook('zikora', 2000, 'Ngozi Adichie', 'Adepero Oduye')
+        with self.client:
+            response = self.client.delete(
+                f'/api/v1/audio/audiobook/{audiobook.id}/'
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(response.json, {'detail': "deleted"})
+        print("\n=============================================================")
+
+    def test_delete_invalid_song(self):
+        """Test that the audiobook url is incorrect for DELETE HTTP method"""
+        with self.client:
+            response = self.client.delete(
+                f'/api/v1/audio/audiobook/eeee/',
+            )
+        self.assertEqual(response.status_code, 500)
+        print("\n=============================================================")
+
+
+if __name__ == '__main__':
+    unittest.main()
