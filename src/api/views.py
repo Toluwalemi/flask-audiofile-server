@@ -80,12 +80,10 @@ class AudioView(FlaskView):
                                              'host': post_data.get('audioFileMetadata').get('host'),
                                              'participants': post_data.get('audioFileMetadata').get('participants'),
                                              }
-            print(new_song)
             name = new_song['audioFileMetadata'].get('name')
             duration = new_song['audioFileMetadata'].get('duration')
             host = new_song['audioFileMetadata'].get('host')
             participants = new_song['audioFileMetadata'].get('participants')
-            print(participants)
             try:
                 podcast = Podcast.query.filter_by(name=name).first()
                 if not podcast:
@@ -95,19 +93,22 @@ class AudioView(FlaskView):
                     response_object['message'] = f'{name} was added!'
                     return jsonify(response_object), 200
                 else:
-                    response_object['message'] = 'This audiobook already exists.'
+                    response_object['message'] = 'This podcast already exists.'
                     return jsonify(response_object), 400
             except ValueError:
                 return jsonify(response_object), 400
             except exc.IntegrityError as e:
                 db.session.rollback()
                 return jsonify(response_object), 400
-            # except BaseException as e:
-            #     print(e)
-            #     return jsonify(response_object), 500
+            except BaseException:
+                return jsonify(response_object), 500
 
     def get(self, audioFileType):
-        """Get all users"""
+        """
+        Get method to return all audiofile types
+        :param audioFileType: song, audiobook, or podcast
+        :return: a response object
+        """
         if audioFileType == 'song':
             response_object = {
                 'status': 'success',
@@ -126,11 +127,24 @@ class AudioView(FlaskView):
             }
             return jsonify(response_object), 200
 
+        if audioFileType == 'podcast':
+            response_object = {
+                'status': 'success',
+                'data': {
+                    'podcasts': [podcast.to_json() for podcast in Podcast.query.all()]
+                }
+            }
+            return jsonify(response_object), 200
+
 
 class AudioItemView(FlaskView):
     """Class-based views to get a single audioFileType"""
 
     def get(self, audioFileType, audioFileID):
+        """
+        :param audioFileType: song, audiobook, or podcast
+        :param audioFileID: an ID of any of the above
+        """
         response_object = {
             'status': 'fail',
             'message': 'Does not exist'
@@ -175,8 +189,31 @@ class AudioItemView(FlaskView):
             except:
                 return jsonify(response_object), 500
 
+        if audioFileType == 'podcast':
+            try:
+                podcast = Podcast.query.filter_by(id=audioFileID).first()
+                if not podcast:
+                    return jsonify(response_object), 400
+                else:
+                    response_object = {
+                        'status': 'success',
+                        'data': {
+                            'id': podcast.id,
+                            'name': podcast.name,
+                            'duration': podcast.duration,
+                            'host': podcast.host,
+                        }
+                    }
+                    return jsonify(response_object), 200
+            except ValueError:
+                return jsonify(response_object), 400
+            except:
+                return jsonify(response_object), 500
+
     def patch(self, audioFileType, audioFileID):
-        """Update json"""
+        """
+        Patch methods to update a json
+        """
         response_object = {
             'status': 'success',
             'message': 'Updated!'
