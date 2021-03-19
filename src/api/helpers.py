@@ -1,5 +1,5 @@
 from src import db
-from src.api.models import Song
+from src.api.models import Song, AudioBook
 
 
 def re_path(route, view, **kwargs):
@@ -18,3 +18,15 @@ def add_song(name, duration):
     db.session.add(song)
     db.session.commit()
     return song
+
+
+def add_audiobook(name, duration, author, narrator):
+    audiobook = AudioBook(
+        name=name,
+        duration=duration,
+        author=author,
+        narrator=narrator
+    )
+    db.session.add(audiobook)
+    db.session.commit()
+    return audiobook
