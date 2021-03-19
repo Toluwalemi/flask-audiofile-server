@@ -4,7 +4,7 @@ from flask_classful import FlaskView
 from sqlalchemy import exc
 
 from src import db
-from src.api.models import Song, AudioBook
+from src.api.models import Song, AudioBook, Podcast
 
 
 class AudioView(FlaskView):
@@ -73,6 +73,38 @@ class AudioView(FlaskView):
                 return jsonify(response_object), 400
             except:
                 return jsonify(response_object), 500
+
+        if post_data['audioFileType'] == 'podcast':
+            new_song['audioFileMetadata'] = {'name': post_data.get('audioFileMetadata').get('name'),
+                                             'duration': post_data.get('audioFileMetadata').get('duration'),
+                                             'host': post_data.get('audioFileMetadata').get('host'),
+                                             'participants': post_data.get('audioFileMetadata').get('participants'),
+                                             }
+            print(new_song)
+            name = new_song['audioFileMetadata'].get('name')
+            duration = new_song['audioFileMetadata'].get('duration')
+            host = new_song['audioFileMetadata'].get('host')
+            participants = new_song['audioFileMetadata'].get('participants')
+            print(participants)
+            try:
+                podcast = Podcast.query.filter_by(name=name).first()
+                if not podcast:
+                    db.session.add(Podcast(name=name, duration=duration, host=host, participants=participants))
+                    db.session.commit()
+                    response_object['status'] = 'success'
+                    response_object['message'] = f'{name} was added!'
+                    return jsonify(response_object), 200
+                else:
+                    response_object['message'] = 'This audiobook already exists.'
+                    return jsonify(response_object), 400
+            except ValueError:
+                return jsonify(response_object), 400
+            except exc.IntegrityError as e:
+                db.session.rollback()
+                return jsonify(response_object), 400
+            # except BaseException as e:
+            #     print(e)
+            #     return jsonify(response_object), 500
 
     def get(self, audioFileType):
         """Get all users"""
@@ -144,6 +176,7 @@ class AudioItemView(FlaskView):
                 return jsonify(response_object), 500
 
     def patch(self, audioFileType, audioFileID):
+        """Update json"""
         response_object = {
             'status': 'success',
             'message': 'Updated!'
@@ -176,6 +209,7 @@ class AudioItemView(FlaskView):
             return response_object, 200
 
     def delete(self, audioFileType, audioFileID):
+        """Delete a particular id"""
         if audioFileType == 'song':
             try:
                 song = Song.query.filter_by(id=audioFileID).first_or_404()
