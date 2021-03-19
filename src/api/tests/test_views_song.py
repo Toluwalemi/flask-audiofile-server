@@ -5,11 +5,11 @@ from src.api.helpers import add_song
 from src.api.tests.base import BaseTestCase
 
 
-class TestAudioService(BaseTestCase):
-    """Tests for the audio service."""
+class TestSong(BaseTestCase):
+    """Tests for the audio file type 'Song'."""
 
     def test_add_valid_song(self):
-        """Ensure a new audio file type can be added to the database"""
+        """Ensure a new song audio file type can be added to the database"""
         with self.client:
             response = self.client.post(
                 '/api/v1/audio/',
