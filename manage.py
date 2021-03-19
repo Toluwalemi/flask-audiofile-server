@@ -36,6 +36,7 @@ def test():
         return 0
     return 1
 
+
 @cli.command()
 def cov():
     """Runs the unit tests with coverage."""
