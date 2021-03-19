@@ -283,3 +283,14 @@ class AudioItemView(FlaskView):
                 return jsonify({"detail": "No result found"}), 400
             except:
                 return jsonify({"detail": "No result found"}), 500
+
+        if audioFileType == 'podcast':
+            try:
+                podcast = Podcast.query.filter_by(id=audioFileID).first_or_404()
+                db.session.delete(podcast)
+                db.session.commit()
+                return jsonify({"status": "deleted"}), 200
+            except sqlalchemy.orm.exc.NoResultFound:
+                return jsonify({"detail": "No result found"}), 400
+            except:
+                return jsonify({"detail": "No result found"}), 500
