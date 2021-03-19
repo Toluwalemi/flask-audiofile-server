@@ -43,7 +43,7 @@ class Song(TimestampMixin, DurationMixin, db.Model):
         }
 
 
-class Podcast(TimestampMixin, db.Model):
+class Podcast(TimestampMixin, DurationMixin, db.Model):
     """Model to store details of Audio File Type 'Podcast'. """
     id = db.Column(db.Integer,
                    primary_key=True, nullable=False,
@@ -53,13 +53,15 @@ class Podcast(TimestampMixin, db.Model):
     participants = db.relationship("Participant",
                                    backref=db.backref('podcast', uselist=False))
 
-    def __init__(self, name, host, participants):
+    def __init__(self, name, duration, host, participants):
         self.name = name
+        self.duration = duration
         self.host = host
         self.participants = list(map(Participant, participants))
 
     def __repr__(self):
-        return f"{__class__.__name__}({self.name}"
+        return f"{__class__.__name__}({self.name}, {self.duration}\
+         {self.host})"
 
 
 class Participant(TimestampMixin, db.Model):
