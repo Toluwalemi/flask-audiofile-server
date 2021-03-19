@@ -82,9 +82,12 @@ class AudioBook(TimestampMixin, db.Model):
     author = db.Column(db.String(100), nullable=False)
     narrator = db.Column(db.String(100), nullable=False)
 
-    def __init__(self, title, author, duration):
-        self.name = title
+    def __init__(self, name, duration, author, narrator):
+        self.name = name
         self.author = author
+        self.duration = duration
+        self.narrator = narrator
 
     def __repr__(self):
-        return f"{__class__.__name__}({self.name}"
+        return f"{__class__.__name__}({self.name}, {self.author}, \
+         {self.duration}, {self.narrator}"
