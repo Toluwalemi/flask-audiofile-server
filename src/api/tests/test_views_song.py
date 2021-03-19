@@ -31,7 +31,7 @@ class TestSong(BaseTestCase):
             print("\n=============================================================")
 
     def test_add_song_invalid_json(self):
-        """Ensure error is thrown if the JSON object is empty"""
+        """Ensure error is thrown if the song JSON object is empty"""
         with self.client:
             response = self.client.post(
                 '/api/v1/audio/',
@@ -68,7 +68,7 @@ class TestSong(BaseTestCase):
 
         print("\n=============================================================")
 
-    def test_add_duplicate_audio_file(self):
+    def test_add_duplicate_song(self):
         """Ensure that an error is returned for a duplicate entry"""
         with self.client:
             self.client.post(
