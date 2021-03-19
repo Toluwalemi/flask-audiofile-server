@@ -75,6 +75,16 @@ class Podcast(TimestampMixin, DurationMixin, db.Model):
                 raise ValueError('Maximum of 10 participants possible')
             return participants
 
+    def to_json(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'duration': self.duration,
+            'host': self.host,
+            'participants': self.participants,
+            'uploaded_at': self.uploaded_at
+        }
+
 
 class AudioBook(TimestampMixin, DurationMixin, db.Model):
     """Model to store details of Audio File Type 'AudioBook'. """
