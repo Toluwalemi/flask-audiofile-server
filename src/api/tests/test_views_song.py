@@ -114,23 +114,23 @@ class TestSong(BaseTestCase):
         print("\n=============================================================")
 
     def test_specific_song_no_id(self):
-        """Ensure error is thrown if an id is not provided."""
+        """Ensure error is thrown if an id for song is not provided."""
         with self.client:
             response = self.client.get(f'/api/v1/audio/song/huh/')
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 500)
-            self.assertIn('Song does not exist', data['message'])
+            self.assertIn('Does not exist', data['message'])
             self.assertIn('fail', data['status'])
 
         print("\n=============================================================")
 
     def test_specific_song_incorrect_id(self):
-        """Ensure error is thrown if an id is incorrect."""
+        """Ensure error is thrown if an id for song is incorrect."""
         with self.client:
             response = self.client.get(f'/api/v1/audio/song/404/')
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 400)
-            self.assertIn('Song does not exist', data['message'])
+            self.assertIn('Does not exist', data['message'])
             self.assertIn('fail', data['status'])
 
         print("\n=============================================================")
@@ -165,10 +165,13 @@ class TestSong(BaseTestCase):
 
             data = json.loads((response.data.decode()))
             self.assertEqual(response.status_code, 200)
-            self.assertIn('Your song has been updated!', data['message'])
+            self.assertIn('Updated!', data['message'])
             self.assertIn('success', data['status'])
 
         print("\n=============================================================")
+
+    def test_patch_invalid_song(self):
+        pass
 
     def test_delete_song(self):
         """Test that a specific song is deleted"""
