@@ -236,11 +236,26 @@ class AudioItemView(FlaskView):
                 audiobook.name = post_data['audioFileMetadata']['name']
             if post_data.get('audioFileMetadata').get('duration'):
                 audiobook.duration = post_data['audioFileMetadata']['duration']
-            if post_data.get('audioFileMetadata').get('duration'):
-                audiobook.duration = post_data['audioFileMetadata']['author']
-            if post_data.get('audioFileMetadata').get('duration'):
-                audiobook.duration = post_data['audioFileMetadata']['narrator']
+            if post_data.get('audioFileMetadata').get('author'):
+                audiobook.author = post_data['audioFileMetadata']['author']
+            if post_data.get('audioFileMetadata').get('narrator'):
+                audiobook.narrator = post_data['audioFileMetadata']['narrator']
             db.session.add(audiobook)
+            db.session.commit()
+
+            return response_object, 200
+
+        if audioFileType == 'podcast':
+            podcast = Podcast.query.get(audioFileID)
+            if post_data.get('audioFileMetadata').get('name'):
+                podcast.name = post_data['audioFileMetadata']['name']
+            if post_data.get('audioFileMetadata').get('duration'):
+                podcast.duration = post_data['audioFileMetadata']['duration']
+            if post_data.get('audioFileMetadata').get('host'):
+                podcast.host = post_data['audioFileMetadata']['host']
+            if post_data.get('audioFileMetadata').get('participants'):
+                podcast.participants = post_data['audioFileMetadata']['participants']
+            db.session.add(podcast)
             db.session.commit()
 
             return response_object, 200
