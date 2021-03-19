@@ -4,7 +4,7 @@ from flask_classful import FlaskView
 from sqlalchemy import exc
 
 from src import db
-from src.api.models import Song
+from src.api.models import Song, AudioBook
 
 
 class AudioView(FlaskView):
@@ -36,6 +36,35 @@ class AudioView(FlaskView):
                     return jsonify(response_object), 200
                 else:
                     response_object['message'] = 'This song already exists.'
+                    return jsonify(response_object), 400
+            except ValueError:
+                return jsonify(response_object), 400
+            except exc.IntegrityError as e:
+                db.session.rollback()
+                return jsonify(response_object), 400
+            except:
+                return jsonify(response_object), 500
+
+        if post_data['audioFileType'] == 'audiobook':
+            new_song['audioFileMetadata'] = {'name': post_data.get('audioFileMetadata').get('name'),
+                                             'duration': post_data.get('audioFileMetadata').get('duration'),
+                                             'author': post_data.get('audioFileMetadata').get('author'),
+                                             'narrator': post_data.get('audioFileMetadata').get('narrator'),
+                                             }
+            name = new_song['audioFileMetadata'].get('name')
+            duration = new_song['audioFileMetadata'].get('duration')
+            author = new_song['audioFileMetadata'].get('author')
+            narrator = new_song['audioFileMetadata'].get('author')
+            try:
+                song = AudioBook.query.filter_by(name=name).first()
+                if not song:
+                    db.session.add(AudioBook(name=name, duration=duration, author=author, narrator=narrator))
+                    db.session.commit()
+                    response_object['status'] = 'success'
+                    response_object['message'] = f'{name} was added!'
+                    return jsonify(response_object), 200
+                else:
+                    response_object['message'] = 'This audiobook already exists.'
                     return jsonify(response_object), 400
             except ValueError:
                 return jsonify(response_object), 400
