@@ -128,6 +128,17 @@ class TestAudioBook(BaseTestCase):
 
         print("\n=============================================================")
 
+    def test_delete_song(self):
+        """Test that a specific podcast is deleted"""
+        podcast = add_podcast('Python Daily', 300, 'Dan Bader')
+        with self.client:
+            response = self.client.delete(
+                f'/api/v1/audio/podcast/{podcast.id}/'
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(response.json, {'detail': "deleted"})
+        print("\n=============================================================")
+
 
 if __name__ == '__main__':
     unittest.main()
