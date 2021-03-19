@@ -1,6 +1,6 @@
 ### PyCharm ###
 .idea/
-
+migrations
 .git
 Dockerfile-dev
 Dockerfile-prod
