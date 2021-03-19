@@ -56,8 +56,8 @@ class AudioView(FlaskView):
             author = new_song['audioFileMetadata'].get('author')
             narrator = new_song['audioFileMetadata'].get('author')
             try:
-                song = AudioBook.query.filter_by(name=name).first()
-                if not song:
+                audiobook = AudioBook.query.filter_by(name=name).first()
+                if not audiobook:
                     db.session.add(AudioBook(name=name, duration=duration, author=author, narrator=narrator))
                     db.session.commit()
                     response_object['status'] = 'success'
@@ -85,6 +85,15 @@ class AudioView(FlaskView):
             }
             return jsonify(response_object), 200
 
+        if audioFileType == 'audiobook':
+            response_object = {
+                'status': 'success',
+                'data': {
+                    'audiobooks': [audiobook.to_json() for audiobook in AudioBook.query.all()]
+                }
+            }
+            return jsonify(response_object), 200
+
 
 class AudioItemView(FlaskView):
     """Class-based views to get a single audioFileType"""
@@ -92,7 +101,7 @@ class AudioItemView(FlaskView):
     def get(self, audioFileType, audioFileID):
         response_object = {
             'status': 'fail',
-            'message': 'Song does not exist'
+            'message': 'Does not exist'
         }
         if audioFileType == 'song':
             try:
@@ -114,10 +123,30 @@ class AudioItemView(FlaskView):
             except:
                 return jsonify(response_object), 500
 
+        if audioFileType == 'audiobook':
+            try:
+                audiobook = AudioBook.query.filter_by(id=audioFileID).first()
+                if not audiobook:
+                    return jsonify(response_object), 400
+                else:
+                    response_object = {
+                        'status': 'success',
+                        'data': {
+                            'id': audiobook.id,
+                            'name': audiobook.name,
+                            'duration': audiobook.duration
+                        }
+                    }
+                    return jsonify(response_object), 200
+            except ValueError:
+                return jsonify(response_object), 400
+            except:
+                return jsonify(response_object), 500
+
     def patch(self, audioFileType, audioFileID):
         response_object = {
             'status': 'success',
-            'message': 'Your song has been updated!'
+            'message': 'Updated!'
         }
         post_data = request.get_json()
         if audioFileType == 'song':
@@ -127,6 +156,21 @@ class AudioItemView(FlaskView):
             if post_data.get('audioFileMetadata').get('duration'):
                 song.duration = post_data['audioFileMetadata']['duration']
             db.session.add(song)
+            db.session.commit()
+
+            return response_object, 200
+
+        if audioFileType == 'audiobook':
+            audiobook = AudioBook.query.get(audioFileID)
+            if post_data.get('audioFileMetadata').get('name'):
+                audiobook.name = post_data['audioFileMetadata']['name']
+            if post_data.get('audioFileMetadata').get('duration'):
+                audiobook.duration = post_data['audioFileMetadata']['duration']
+            if post_data.get('audioFileMetadata').get('duration'):
+                audiobook.duration = post_data['audioFileMetadata']['author']
+            if post_data.get('audioFileMetadata').get('duration'):
+                audiobook.duration = post_data['audioFileMetadata']['narrator']
+            db.session.add(audiobook)
             db.session.commit()
 
             return response_object, 200
