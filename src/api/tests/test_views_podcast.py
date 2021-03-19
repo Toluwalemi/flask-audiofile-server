@@ -106,6 +106,28 @@ class TestAudioBook(BaseTestCase):
 
         print("\n=============================================================")
 
+    def test_patch_podcast(self):
+        """Test to update podcast json"""
+        podcast = add_podcast('Python Daily', 300, 'Dan Bader')
+        with self.client:
+            response = self.client.patch(
+                f'/api/v1/audio/podcast/{podcast.id}/',
+                data=json.dumps({
+                    'audioFileType': 'podcast',
+                    'audioFileMetadata': {
+                        'participants': {'fullname': ['Tolu', 'William', 'Kpoke']}
+                    }
+                }),
+                content_type='application/json',
+            )
+
+            data = json.loads((response.data.decode()))
+            self.assertEqual(response.status_code, 200)
+            self.assertIn('Updated!', data['message'])
+            self.assertIn('success', data['status'])
+
+        print("\n=============================================================")
+
 
 if __name__ == '__main__':
     unittest.main()
