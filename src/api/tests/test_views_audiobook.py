@@ -140,8 +140,8 @@ class TestAudioBook(BaseTestCase):
     def test_patch_invalid_song(self):
         pass
 
-    def test_delete_song(self):
-        """Test that a specific song is deleted"""
+    def test_delete_audiobook(self):
+        """Test that a specific audiobook is deleted"""
         audiobook = add_audiobook('zikora', 2000, 'Ngozi Adichie', 'Adepero Oduye')
         with self.client:
             response = self.client.delete(
@@ -151,7 +151,7 @@ class TestAudioBook(BaseTestCase):
             self.assertTrue(response.json, {'detail': "deleted"})
         print("\n=============================================================")
 
-    def test_delete_invalid_song(self):
+    def test_delete_invalid_audiobook(self):
         """Test that the audiobook url is incorrect for DELETE HTTP method"""
         with self.client:
             response = self.client.delete(
